@@ -28,9 +28,10 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Increment Patch Version
-      run: mvn build-helper:parse-version versions:set \
-          -DnewVersion=\${parsedVersion.nextPatchVersion} \
-          -DprocessAllModules=true
+      run: |
+        CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        PATCH_VERSION=$(echo $CURRENT_VERSION | awk -F. -v OFS=. '{$NF = $NF + 1; print}')
+        mvn versions:set -DnewVersion=$PATCH_VERSION
 
     - name: Build with Maven
       run: mvn clean package --file pom.xml
