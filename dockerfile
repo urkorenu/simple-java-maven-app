@@ -1,4 +1,4 @@
-FROM maven:3.8.8-openjdk-17 as stage-1
+FROM maven:3.8.3-openjdk-17 as stage-1
 
 COPY . .
 RUN mvn dependency:go-offline
