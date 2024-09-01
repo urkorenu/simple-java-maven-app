@@ -27,8 +27,21 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    - name: Increment Patch Version
+      run: mvn build-helper:parse-version versions:set \
+          -DnewVersion=\${parsedVersion.nextPatchVersion} \
+          -DprocessAllModules=true
+
     - name: Build with Maven
       run: mvn clean package --file pom.xml
+
+    - name: Commit Version Increment
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add pom.xml
+        git commit -m "Incremented version to $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
+        git push origin master
 
     # # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     # - name: Update dependency graph
