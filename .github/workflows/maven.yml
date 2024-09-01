@@ -30,8 +30,12 @@ jobs:
     - name: Increment Patch Version
       run: |
         CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-        PATCH_VERSION=$(echo $CURRENT_VERSION | awk -F. -v OFS=. '{$NF = $NF + 1; print}')
-        mvn versions:set -DnewVersion=$PATCH_VERSION
+        MAJOR_VERSION=$(echo $CURRENT_VERSION | cut -d. -f1)
+        MINOR_VERSION=$(echo $CURRENT_VERSION | cut -d. -f2)
+        PATCH_VERSION=$(echo $CURRENT_VERSION | cut -d. -f3)
+        NEW_PATCH_VERSION=$((PATCH_VERSION + 1))
+        NEW_VERSION="$MAJOR_VERSION.$MINOR_VERSION.$NEW_PATCH_VERSION"
+        mvn versions:set -DnewVersion=$NEW_VERSION
 
     - name: Build with Maven
       run: mvn clean package --file pom.xml
