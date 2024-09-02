@@ -8,7 +8,7 @@ RUN mvn clean package --file pom.xml
 
 FROM openjdk:17-slim as stage-2
 
-COPY --from=stage-1 /home/runner/work/simple-java-maven-app/simple-java-maven-app/target/my-app-*.jar /home/runner/work/simple-java-maven-app/simple-java-maven-app/target/my-app-*.jar
+COPY --from=stage-1 /target/my-app-*.jar /target/my-app-*.jar
 
 
-CMD ["java", "-jar", "/home/runner/work/simple-java-maven-app/simple-java-maven-app/target/my-app-*.jar"]
+CMD ["java", "-jar", "/target/my-app-*.jar"]
