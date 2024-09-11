@@ -27,34 +27,40 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+
+    - name: Dependency Review
+      uses: actions/dependency-review-action@v4
+      with:
+        fail-on-severity: moderate
+        deny-licenses: LGPL-2.0, BSD-2-Clause
         
-    - name: Bump version
-      id: bump
-      uses: mickem/gh-action-bump-maven-version@1.0.0
+    # - name: Bump version
+    #   id: bump
+    #   uses: mickem/gh-action-bump-maven-version@1.0.0
 
-    - name: login to docker hub
-      id: docker-hub
-      env:
-        username: ${{secrets.DOCKERHUB_USERNAME}}
-        password: ${{secrets.DOCKERHUB_PASSWORD}}
-      run: |
-        docker login -u $username -p $password 
-    - name: build the docker image
-      id: build-docker-image
-      run: |
-        ls -la 
-        docker build . -f Dockerfile -t urkoren/simple-java:latest
-    - name: push the docker image
-      id: push-docker-image
-      run: docker push ${{secrets.DOCKERHUB_USERNAME}}/simple-java:latest
+    # - name: login to docker hub
+    #   id: docker-hub
+    #   env:
+    #     username: ${{secrets.DOCKERHUB_USERNAME}}
+    #     password: ${{secrets.DOCKERHUB_PASSWORD}}
+    #   run: |
+    #     docker login -u $username -p $password 
+    # - name: build the docker image
+    #   id: build-docker-image
+    #   run: |
+    #     ls -la 
+    #     docker build . -f Dockerfile -t urkoren/simple-java:latest
+    # - name: push the docker image
+    #   id: push-docker-image
+    #   run: docker push ${{secrets.DOCKERHUB_USERNAME}}/simple-java:latest
 
-    - name: install ssh keys
-      run: |
-        install -m 600 -D /dev/null ~/.ssh/id_rsa
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-    - name: connect and pull
-      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker run urkoren/simple-java:latest && exit"
-    - name: cleanup
-      run: rm -rf ~/.ssh
+    # - name: install ssh keys
+    #   run: |
+    #     install -m 600 -D /dev/null ~/.ssh/id_rsa
+    #     echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+    #     ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+    # - name: connect and pull
+    #   run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker run urkoren/simple-java:latest && exit"
+    # - name: cleanup
+    #   run: rm -rf ~/.ssh
 
