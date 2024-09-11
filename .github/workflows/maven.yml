@@ -47,12 +47,6 @@ jobs:
         password: ${{secrets.DOCKERHUB_PASSWORD}}
       run: |
         docker login -u $username -p $password 
-        
-    - name: build the docker image
-      id: build-docker-image
-      run: |
-        ls -la 
-        docker build . -f Dockerfile -t urkoren/simple-java:latest
 
     - name: Scan Docker image 🐳
       uses: snyk/actions/docker@master
@@ -62,11 +56,15 @@ jobs:
         args: --file=Dockerfile --severity-threshold=high --sarif-file-output=snyk.sarif
       env:
         SNYK_TOKEN: ${{ secrets.SNYC_CONTAINER_SCAN }}
+        
+    - name: build the docker image
+      id: build-docker-image
+      run: |
+        ls -la 
+        docker build . -f Dockerfile -t urkoren/simple-java:latest
 
-    - name: Upload Snyk report as sarif 📦
-      uses: github/codeql-action/upload-sarif@v2
-      with:
-        sarif_file: snyk.sarif
+
+
     # - name: push the docker image
     #   id: push-docker-image
     #   run: docker push ${{secrets.DOCKERHUB_USERNAME}}/simple-java:latest
