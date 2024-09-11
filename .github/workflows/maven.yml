@@ -58,10 +58,10 @@ jobs:
       uses: snyk/actions/docker@master
       continue-on-error: true
       with:
-        image: ${{ env.GITHUB_REGISTRY }}/${{ env.GITHUB_REPOSITORY }}:${{ env.DOCKER_IMAGE_TAG }}
+        image: ${{secrets.DOCKERHUB_USERNAME}}/simple-java:latest
         args: --file=Dockerfile --severity-threshold=high --sarif-file-output=snyk.sarif
       env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        SNYK_TOKEN: ${{ secrets.SNYC_CONTAINER_SCAN }}
 
     - name: Upload Snyk report as sarif 📦
       uses: github/codeql-action/upload-sarif@v2
