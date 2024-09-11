@@ -53,7 +53,7 @@ jobs:
       continue-on-error: true
       with:
         image: ${{secrets.DOCKERHUB_USERNAME}}/simple-java:latest
-        args: --file=Dockerfile --severity-threshold=high --sarif-file-output=snyk.sarif
+        args: --file=dockerfile --severity-threshold=high --sarif-file-output=snyk.sarif
       env:
         SNYK_TOKEN: ${{ secrets.SNYC_CONTAINER_SCAN }}
         
