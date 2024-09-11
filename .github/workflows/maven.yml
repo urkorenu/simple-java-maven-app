@@ -36,22 +36,37 @@ jobs:
         base-ref: ${{ github.event.pull_request.base.sha || 'main' }}
         head-ref: ${{ github.event.pull_request.head.sha || github.ref }}
         
-    # - name: Bump version
-    #   id: bump
-    #   uses: mickem/gh-action-bump-maven-version@1.0.0
+    - name: Bump version
+      id: bump
+      uses: mickem/gh-action-bump-maven-version@1.0.0
 
-    # - name: login to docker hub
-    #   id: docker-hub
-    #   env:
-    #     username: ${{secrets.DOCKERHUB_USERNAME}}
-    #     password: ${{secrets.DOCKERHUB_PASSWORD}}
-    #   run: |
-    #     docker login -u $username -p $password 
-    # - name: build the docker image
-    #   id: build-docker-image
-    #   run: |
-    #     ls -la 
-    #     docker build . -f Dockerfile -t urkoren/simple-java:latest
+    - name: login to docker hub
+      id: docker-hub
+      env:
+        username: ${{secrets.DOCKERHUB_USERNAME}}
+        password: ${{secrets.DOCKERHUB_PASSWORD}}
+      run: |
+        docker login -u $username -p $password 
+        
+    - name: build the docker image
+      id: build-docker-image
+      run: |
+        ls -la 
+        docker build . -f Dockerfile -t urkoren/simple-java:latest
+
+    - name: Scan Docker image 🐳
+      uses: snyk/actions/docker@master
+      continue-on-error: true
+      with:
+        image: ${{ env.GITHUB_REGISTRY }}/${{ env.GITHUB_REPOSITORY }}:${{ env.DOCKER_IMAGE_TAG }}
+        args: --file=Dockerfile --severity-threshold=high --sarif-file-output=snyk.sarif
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+    - name: Upload Snyk report as sarif 📦
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: snyk.sarif
     # - name: push the docker image
     #   id: push-docker-image
     #   run: docker push ${{secrets.DOCKERHUB_USERNAME}}/simple-java:latest
