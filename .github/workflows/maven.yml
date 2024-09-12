@@ -39,9 +39,9 @@ jobs:
     #     base-ref: ${{ github.event.pull_request.base.sha || 'main' }}
     #     head-ref: ${{ github.event.pull_request.head.sha || github.ref }}
         
-    - name: Bump version
-      id: bump
-      uses: mickem/gh-action-bump-maven-version@1.0.0
+    # - name: Bump version
+    #   id: bump
+    #   uses: mickem/gh-action-bump-maven-version@1.0.0
 
     - name: login to docker hub
       id: docker-hub
