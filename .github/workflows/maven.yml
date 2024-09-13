@@ -98,14 +98,16 @@ jobs:
       run: |
         images="${{secrets.DOCKERHUB_USERNAME}}/simple-java:latest"
         for tag in ${TAGS}; do
-          images+="${tag}@${DIGEST} "
+          images+=" ${tag}@${DIGEST}"
         done
+        echo "Signing images: ${images}"
         cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${images}
       env:
         TAGS: ${{ steps.docker_meta.outputs.tags }}
         COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         DIGEST: ${{ steps.build-and-push.outputs.digest }}
+
 
     # - name: install ssh keys
     #   run: |
