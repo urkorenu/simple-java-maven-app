@@ -101,9 +101,15 @@ jobs:
         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         DIGEST: ${{ steps.build-and-push.outputs.digest }}
 
+    - name: Write signing key to disk
+      run: 'echo "$KEY" > cosign.pub'
+      shell: bash
+      env:
+        KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
+
     - name: Verify cosign
       run: |
-        cosign verify --key "${{secrets.COSIGN_PUBLIC_KEY}}" "${{secrets.DOCKERHUB_USERNAME}}/simple-java:latest"
+        cosign verify --key cosign.pub "${{secrets.DOCKERHUB_USERNAME}}/simple-java:latest"
         
     # - name: Install ssh keys
     #   run: |
