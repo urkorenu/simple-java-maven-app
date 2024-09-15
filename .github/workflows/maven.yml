@@ -103,7 +103,7 @@ jobs:
 
     - name: Verify cosign
       run: |
-        cosign verify --key "${{secrets.COSIGN_PUBLIC_KEY}} "${{secrets.DOCKERHUB_USERNAME}}/simple-java:latest"
+        cosign verify --key "${{secrets.COSIGN_PUBLIC_KEY}}" "${{secrets.DOCKERHUB_USERNAME}}/simple-java:latest"
         
     # - name: Install ssh keys
     #   run: |
