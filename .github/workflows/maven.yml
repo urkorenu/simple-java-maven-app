@@ -16,9 +16,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
 
@@ -102,6 +100,10 @@ jobs:
         COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         DIGEST: ${{ steps.build-and-push.outputs.digest }}
+
+    - name: Verify cosign
+      run: |
+        cosign verify --key "${{secrets.COSIGN_PUBLIC_KEY}} "${{secrets.DOCKERHUB_USERNAME}}/simple-java:latest"
         
     # - name: Install ssh keys
     #   run: |
